@@ -13,7 +13,6 @@
 
   <script type="module">
     import { auth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "./firebase-config.js";
-    import { db, doc, setDoc } from "./firebase-config.js";
 
     const loginBtn = document.getElementById("googleLogin");
     const provider = new GoogleAuthProvider();
@@ -22,27 +21,16 @@
     onAuthStateChanged(auth, (user) => {
       if (user) {
         window.location.href = "secret.html";
-        //console.log("Logged in.")
       }
     });
 
     // Login and redirect
     loginBtn.addEventListener("click", async () => {
       try {
-        const result = await signInWithPopup(auth, provider);
-        const user = result.user;
-
-        // Save user name and email to Firestore
-        const userRef = doc(db, "users", user.uid);
-        await setDoc(userRef, {
-          name: user.displayName,
-          email: user.email
-        });
-
-        //Redirect to secret page
+        await signInWithPopup(auth, provider);
         window.location.href = "secret.html"; 
       } catch (error) {
-        console.error("Login or Firestore save failed:", error);
+        console.error("Login failed:", error);
       }
     });
   </script>
